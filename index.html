@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue as Modal</title>
+</head>
+
+<body>
+
+    <div id="app" style="display: flex; flex-direction: column; align-items: center;">
+        <div v-if="showTitle">
+            <h1>My Star Wars List 🪐</h1>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <button @click="toggleTitle"><span v-if="showTitle">Hide Header</span><span v-else=>Show
+                    Header</span> </button>
+        </div>
+        <ul style="padding-left: 0; list-style: none;">
+            <li v-for="(movie, i) in movies">
+                <div v-if="index === i"
+                    style="display: flex; align-items: center; justify-content: space-evenly; height: 50px; width: 250px; border-radius: 5px; padding: 5px; background-color: goldenrod; margin: 10px;">
+                    <input style="width: 200px;" type="text" placeholder="update title" v-model="title"
+                        @input="handleChange"  ref="input"/>
+                    <button v-if="movie.title !== title" style="height: 25px;" @click="handleSave">Save</button>
+                    <button v-if="buttonClicked" style="height: 25px;" disabled>Saved</button>
+                </div>
+                <div v-else
+                    style="display: flex; align-items: center; justify-content: space-evenly; height: 50px; width: 250px; border-radius: 5px; padding: 5px; margin: 10px;">
+                    <h4>{{movie.title}}</h4>
+                    <button style="height: 25px;" @click="handleClick">Select</button>
+                </div>
+            </li>
+            </ol>
+    </div>
+</body>
+
+</html>
+<script src="https://unpkg.com/vue@next"></script>
+<script>
+    const app = Vue.createApp({
+        //data, functions
+        data() {
+            return {
+                title: "Star Wars",
+                movies: [
+                    { title: "Star Wars", active: true },
+                    { title: "The Empire Strikes Back", active: false },
+                    { title: "Return of the Jedi", active: false },
+                    { title: "Revenge of the Sith", active: false },
+                    { title: "Attack of the Clones", active: false },
+                    { title: "Phantom Menace", active: false }
+                ],
+                index: 0,
+                showTitle: true,
+                buttonClicked: false
+            }
+        },
+        methods: {
+            handleChange(e) {
+                this.buttonClicked = false
+                console.log(e.target.value)
+                this.title = e.target.value
+            },
+            toggleTitle(e) {
+                console.log(e)
+                this.showTitle = !this.showTitle
+            },
+            handleClick(e) {
+                this.buttonClicked = false
+                console.log(e.target.parentNode.children[0].innerHTML)
+                this.title = e.target.parentNode.children[0].innerHTML
+                this.index = this.movies.findIndex(m => m.title === e.target.parentNode.children[0].innerHTML)
+            },
+            handleSave(e) {
+                this.movies[this.index].title = e.target.parentNode.children[0].value
+                this.buttonClicked = true
+            }
+        }
+    })
+    app.mount('#app')
+
+
+</script>
